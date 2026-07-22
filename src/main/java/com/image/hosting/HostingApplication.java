@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class HostingApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(HostingApplication.class, args);
 	}
 

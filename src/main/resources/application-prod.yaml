@@ -1,4 +1,7 @@
-datasource:
-  url: '${DB_URL}'
-  username: '${DB_USERNAME}'
-  password: '${DB_PASSWORD}'
+spring:
+  datasource:
+    url: '${DB_URL}'
+    username: '${DB_USERNAME}'
+    password: '${DB_PASSWORD}'
+server:
+  port: '8080'
