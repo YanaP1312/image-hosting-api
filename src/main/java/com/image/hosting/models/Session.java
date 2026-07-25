@@ -14,5 +14,5 @@ public class Session {
     private String id;
     private UUID userId;
     private LocalDateTime createdAt;
-    private LocalDateTime expiredAt;
+    private LocalDateTime expiresAt;
 }

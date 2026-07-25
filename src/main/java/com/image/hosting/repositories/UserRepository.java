@@ -14,13 +14,13 @@ public class UserRepository {
 
     private final JdbcClient jdbcClient;
 
-    public User createUser(User user){
+    public User createUser(User user) {
         return jdbcClient
                 .sql("""
-                INSERT INTO users (name, email, password_hash) 
-                VALUES (:name, :email, :password_hash)
-                RETURNING id, name, email, password_hash, created_at
-                """)
+                        INSERT INTO users (name, email, password_hash)
+                        VALUES (:name, :email, :password_hash)
+                        RETURNING id, name, email, password_hash, created_at
+                        """)
                 .param("name", user.getName())
                 .param("email", user.getEmail())
                 .param("password_hash", user.getPasswordHash())
@@ -28,7 +28,7 @@ public class UserRepository {
                 .single();
     }
 
-    public Optional<User> findById(UUID id){
+    public Optional<User> findUserById(UUID id) {
         return jdbcClient
                 .sql("""
                         SELECT id, name, email, password_hash, created_at
@@ -39,18 +39,18 @@ public class UserRepository {
                 .optional();
     }
 
-    public Optional<User> findByEmail(String email){
+    public Optional<User> findUserByEmail(String email) {
         return jdbcClient
                 .sql("""
-                SELECT id, name, email, password_hash, created_at
-                FROM users WHERE email = :email
-                """)
+                        SELECT id, name, email, password_hash, created_at
+                        FROM users WHERE email = :email
+                        """)
                 .param("email", email)
                 .query(User.class)
                 .optional();
     }
 
-    public void deleteUserById(UUID id){
+    public void deleteUserById(UUID id) {
         jdbcClient
                 .sql("DELETE FROM users WHERE id = :id")
                 .param("id", id)
