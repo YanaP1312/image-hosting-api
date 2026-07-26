@@ -21,4 +21,8 @@ public class UserService {
 
         return new GetCurrentUserResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt());
     }
+
+    public void deleteUser(UUID userId) {
+        userRepository.deleteUserById(userId);
+    }
 }

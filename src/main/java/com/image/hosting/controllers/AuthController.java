@@ -10,8 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
@@ -32,7 +30,7 @@ public class AuthController {
 
     @DeleteMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(@RequestHeader("Authorization") String authHeader){
+    public void logout(@RequestHeader("Authorization") String authHeader) {
         String rawToken = authHeader.substring(7);
         authService.logout(rawToken);
     }
