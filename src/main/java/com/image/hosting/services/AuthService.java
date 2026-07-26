@@ -65,5 +65,10 @@ public class AuthService {
         return new LoginResponse(rawToken);
     }
 
+    public void logout(String rawToken){
+
+        String hashedToken = tokenService.hashToken(rawToken);
+        sessionRepository.deleteSessionById(hashedToken);
+    }
 
 }
