@@ -1,6 +1,8 @@
 package com.image.hosting.controllers;
 
+import com.image.hosting.dto.requests.auth.LoginRequest;
 import com.image.hosting.dto.requests.auth.RegisterRequest;
+import com.image.hosting.dto.responses.auth.LoginResponse;
 import com.image.hosting.dto.responses.auth.RegisterResponse;
 import com.image.hosting.services.AuthService;
 import jakarta.validation.Valid;
@@ -17,7 +19,12 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public RegisterResponse register(@Valid @RequestBody RegisterRequest request){
+    public RegisterResponse register(@Valid @RequestBody RegisterRequest request) {
         return authService.register(request);
+    }
+
+    @PostMapping("/login")
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 }

@@ -1,11 +1,10 @@
 package com.image.hosting.dto.requests.auth;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record LoginRequest (
+public record LoginRequest(
         @NotBlank(message = "Email is required")
         @Email(message = "Email must be a valid email format")
         String email,
@@ -13,5 +12,5 @@ public record LoginRequest (
         @NotBlank(message = "Password is required")
         @Size(min = 8, message = "Password must be at least 8 characters long")
         String password
-){
+) {
 }
