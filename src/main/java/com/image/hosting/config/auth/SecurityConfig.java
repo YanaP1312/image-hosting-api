@@ -1,4 +1,4 @@
-package com.image.hosting.config;
+package com.image.hosting.config.auth;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

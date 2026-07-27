@@ -1,4 +1,4 @@
-package com.image.hosting.config;
+package com.image.hosting.config.auth;
 
 
 import jakarta.servlet.http.HttpServletRequest;
