@@ -1,16 +1,22 @@
 package com.image.hosting.services;
 
+import com.image.hosting.dto.responses.image.GetImageMetadataResponse;
+import com.image.hosting.dto.responses.image.GetImageResponse;
 import com.image.hosting.dto.responses.image.PostImageResponse;
+import com.image.hosting.exceptions.UserNotFoundException;
 import com.image.hosting.exceptions.image.ImageNotFoundException;
 import com.image.hosting.exceptions.image.ImageTooLargeException;
 import com.image.hosting.models.Image;
 import com.image.hosting.models.ImageContent;
+import com.image.hosting.models.User;
 import com.image.hosting.repositories.ImageRepository;
+import com.image.hosting.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -19,6 +25,7 @@ public class ImageService {
 
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
     private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
     private final FileService fileService;
 
 
@@ -64,4 +71,23 @@ public class ImageService {
             throw new RuntimeException("Failed to download image from storage", e);
         }
     }
+
+    public GetImageMetadataResponse getImageMetadataById(UUID imageId){
+        Image image = imageRepository.findImageById(imageId).orElseThrow(() ->
+                new ImageNotFoundException("Image not found"));
+
+        User user = userRepository.findUserById(image.getUserId()).orElseThrow(() ->
+                new UserNotFoundException("User not found"));
+
+        return new GetImageMetadataResponse(
+                image.getId(),
+                image.getUserId(),
+                user.getName(),
+                image.getCreatedAt(),
+                image.getContentType(),
+                image.getTags()
+        );
+    }
+
+
 }

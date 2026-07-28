@@ -1,5 +1,6 @@
 package com.image.hosting.controllers;
 
+import com.image.hosting.dto.responses.image.GetImageMetadataResponse;
 import com.image.hosting.dto.responses.image.PostImageResponse;
 import com.image.hosting.models.ImageContent;
 import com.image.hosting.services.ImageService;
@@ -32,8 +33,14 @@ public class ImageController {
     @GetMapping("/{id}")
     public ResponseEntity<byte[]> getImageContent(@PathVariable UUID id){
         ImageContent content = imageService.getImageById(id);
-return ResponseEntity.ok().contentType(MediaType.parseMediaType(content.contentType()))
+
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(content.contentType()))
         .body(content.bytes());
+    }
+
+    @GetMapping("/{id}/metadata")
+    public GetImageMetadataResponse getImageMetadataById(@PathVariable UUID id){
+        return imageService.getImageMetadataById(id);
     }
 
 }
