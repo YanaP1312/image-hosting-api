@@ -5,6 +5,7 @@ import com.image.hosting.dto.responses.image.GetImageMetadataResponse;
 import com.image.hosting.dto.responses.image.GetImageResponse;
 import com.image.hosting.dto.responses.image.PostImageResponse;
 import com.image.hosting.exceptions.UserNotFoundException;
+import com.image.hosting.exceptions.image.ForbiddenImageAccessException;
 import com.image.hosting.exceptions.image.ImageNotFoundException;
 import com.image.hosting.exceptions.image.ImageTooLargeException;
 import com.image.hosting.models.Image;
@@ -116,6 +117,20 @@ public class ImageService {
                 .map(this::toResponse)
                 .toList();
         return new GetImageListResponse(imageResponses, page, pageSize,totalCount, totalPages);
+    }
+
+    public void deleteImage(UUID imageId, UUID currentUser){
+        Image image = imageRepository.findImageById(imageId).orElseThrow(() ->
+                new ImageNotFoundException("Image not found"));
+
+        if(!image.getUserId().equals(currentUser)){
+            throw new ForbiddenImageAccessException("You can only delete your own images");
+        }
+
+        imageRepository.deleteImageById(imageId);
+        fileService.delete(image.getStorageKey());
+
+
     }
 
 }

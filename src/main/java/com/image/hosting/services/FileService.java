@@ -46,9 +46,13 @@ public class FileService {
 
 
     public void delete(String key) {
-        s3Client.deleteObject(
-                DeleteObjectRequest.builder()
-                        .bucket(bucket).key(key).build()
-        );
+       try {
+           s3Client.deleteObject(
+                   DeleteObjectRequest.builder()
+                           .bucket(bucket).key(key).build()
+           );
+       } catch (Exception e) {
+           throw new RuntimeException("Failed to delete image from storage", e);
+       }
     }
 }

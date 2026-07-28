@@ -57,4 +57,11 @@ public class ImageController {
         return imageService.getAllImages(page, pageSize);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteImageById(@PathVariable UUID id, Authentication authentication){
+        UUID currentUser = (UUID) authentication.getPrincipal();
+        imageService.deleteImage(id, currentUser);
+    }
+
 }
