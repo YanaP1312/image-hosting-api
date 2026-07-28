@@ -6,7 +6,7 @@ import com.image.hosting.models.ImageTags;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record PostImageResponse (
+public record PostImageResponse(
         UUID id,
 
         @JsonProperty("created_at")
@@ -16,5 +16,5 @@ public record PostImageResponse (
         String contentType,
 
         ImageTags tags
-){
+) {
 }

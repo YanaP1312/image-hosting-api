@@ -42,9 +42,11 @@ public class ImageRepository {
                 .contentType(rs.getString("content_type"))
                 .tags(tags)
                 .build();
-    };
+    }
 
-    public Image createImage(Image image){
+    ;
+
+    public Image createImage(Image image) {
         String tagsJson = null;
         if (image.getTags() != null) {
             try {
@@ -73,18 +75,18 @@ public class ImageRepository {
         int offset = (page - 1) * pageSize;
         return jdbcClient
                 .sql("""
-                    SELECT id, user_id, storage_key, created_at, content_type, tags
-                    FROM images
-                    ORDER BY created_at DESC
-                    LIMIT :pageSize OFFSET :offset
-                    """)
+                        SELECT id, user_id, storage_key, created_at, content_type, tags
+                        FROM images
+                        ORDER BY created_at DESC
+                        LIMIT :pageSize OFFSET :offset
+                        """)
                 .param("pageSize", pageSize)
                 .param("offset", offset)
                 .query(this::mapRow)
                 .list();
     }
 
-    public Optional<Image> findImageById(UUID imageId){
+    public Optional<Image> findImageById(UUID imageId) {
         return jdbcClient
                 .sql("""
                         SELECT id, user_id, storage_key, created_at, content_type, tags
@@ -98,17 +100,17 @@ public class ImageRepository {
     public List<Image> findImagesByUserId(UUID userId) {
         return jdbcClient
                 .sql("""
-                    SELECT id, user_id, storage_key, created_at, content_type, tags
-                    FROM images
-                    WHERE user_id = :userId
-                    ORDER BY created_at DESC
-                    """)
+                        SELECT id, user_id, storage_key, created_at, content_type, tags
+                        FROM images
+                        WHERE user_id = :userId
+                        ORDER BY created_at DESC
+                        """)
                 .param("userId", userId)
                 .query(this::mapRow)
                 .list();
     }
 
-    public List<Image> searchImages(int page, int pageSize, String query){
+    public List<Image> searchImages(int page, int pageSize, String query) {
         int offset = (page - 1) * pageSize;
 
         return jdbcClient
@@ -126,14 +128,14 @@ public class ImageRepository {
                 .list();
     }
 
-    public void deleteImageById(UUID id){
+    public void deleteImageById(UUID id) {
         jdbcClient
                 .sql("DELETE FROM images WHERE id = :id")
                 .param("id", id)
                 .update();
     }
 
-    public Image updateImageTags(UUID id, ImageTags tags){
+    public Image updateImageTags(UUID id, ImageTags tags) {
         String tagsJson;
         try {
             tagsJson = objectMapper.writeValueAsString(tags);
@@ -154,7 +156,7 @@ public class ImageRepository {
                 .single();
     }
 
-    public int countImage(){
+    public int countImage() {
         return jdbcClient
                 .sql("SELECT COUNT(*) FROM images")
                 .query(Integer.class)
@@ -164,9 +166,9 @@ public class ImageRepository {
     public int countSearchResults(String query) {
         return jdbcClient
                 .sql("""
-                    SELECT COUNT(*) FROM images
-                    WHERE tags::text ILIKE :query
-                    """)
+                        SELECT COUNT(*) FROM images
+                        WHERE tags::text ILIKE :query
+                        """)
                 .param("query", "%" + query + "%")
                 .query(Integer.class)
                 .single();

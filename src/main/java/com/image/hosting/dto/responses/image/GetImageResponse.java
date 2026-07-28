@@ -16,4 +16,5 @@ public record GetImageResponse(
         String contentType,
 
         ImageTags tags
-) {}
+) {
+}

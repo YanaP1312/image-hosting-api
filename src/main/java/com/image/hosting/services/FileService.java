@@ -1,6 +1,5 @@
 package com.image.hosting.services;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +10,6 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-
 
 import java.io.IOException;
 
@@ -46,13 +44,13 @@ public class FileService {
 
 
     public void delete(String key) {
-       try {
-           s3Client.deleteObject(
-                   DeleteObjectRequest.builder()
-                           .bucket(bucket).key(key).build()
-           );
-       } catch (Exception e) {
-           throw new RuntimeException("Failed to delete image from storage", e);
-       }
+        try {
+            s3Client.deleteObject(
+                    DeleteObjectRequest.builder()
+                            .bucket(bucket).key(key).build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete image from storage", e);
+        }
     }
 }

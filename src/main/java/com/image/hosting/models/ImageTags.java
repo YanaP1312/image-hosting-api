@@ -1,6 +1,9 @@
 package com.image.hosting.models;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -9,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ImageTags {
-        private List<String> objects;
-        private List<String> tags;
-        private List<String> colors;
+    private List<String> objects;
+    private List<String> tags;
+    private List<String> colors;
 }

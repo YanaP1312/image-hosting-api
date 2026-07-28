@@ -32,15 +32,15 @@ public class ImageController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<byte[]> getImageContent(@PathVariable UUID id){
+    public ResponseEntity<byte[]> getImageContent(@PathVariable UUID id) {
         ImageContent content = imageService.getImageById(id);
 
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(content.contentType()))
-        .body(content.bytes());
+                .body(content.bytes());
     }
 
     @GetMapping("/{id}/metadata")
-    public GetImageMetadataResponse getImageMetadataById(@PathVariable UUID id){
+    public GetImageMetadataResponse getImageMetadataById(@PathVariable UUID id) {
         return imageService.getImageMetadataById(id);
     }
 
@@ -49,8 +49,8 @@ public class ImageController {
             @RequestParam(required = false) String query,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "50") int pageSize
-    ){
-        if(query != null && !query.isBlank()){
+    ) {
+        if (query != null && !query.isBlank()) {
             return imageService.getImagesWithQuery(page, pageSize, query);
         }
 
@@ -59,7 +59,7 @@ public class ImageController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteImageById(@PathVariable UUID id, Authentication authentication){
+    public void deleteImageById(@PathVariable UUID id, Authentication authentication) {
         UUID currentUser = (UUID) authentication.getPrincipal();
         imageService.deleteImage(id, currentUser);
     }

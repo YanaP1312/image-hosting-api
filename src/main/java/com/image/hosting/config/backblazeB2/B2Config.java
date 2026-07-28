@@ -13,10 +13,14 @@ import java.net.URI;
 @Configuration
 public class B2Config {
 
-    @Value("${b2.endpoint}") private String endpoint;
-    @Value("${b2.region}")   private String region;
-    @Value("${b2.access-key}") private String accessKey;
-    @Value("${b2.secret-key}") private String secretKey;
+    @Value("${b2.endpoint}")
+    private String endpoint;
+    @Value("${b2.region}")
+    private String region;
+    @Value("${b2.access-key}")
+    private String accessKey;
+    @Value("${b2.secret-key}")
+    private String secretKey;
 
 
     @Bean
