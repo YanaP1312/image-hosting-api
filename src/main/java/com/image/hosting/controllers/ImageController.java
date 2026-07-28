@@ -57,6 +57,18 @@ public class ImageController {
         return imageService.getAllImages(page, pageSize);
     }
 
+    @GetMapping("/my")
+    public GetImageListResponse getMyImages(
+            Authentication authentication,
+            @RequestParam(required = false) String query,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "50") int pageSize
+    ) {
+        UUID userId = (UUID) authentication.getPrincipal();
+        return imageService.getImageByUserId(userId, query, page, pageSize);
+
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteImageById(@PathVariable UUID id, Authentication authentication) {

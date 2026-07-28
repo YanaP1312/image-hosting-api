@@ -106,6 +106,19 @@ public class ImageService {
 
     }
 
+    public GetImageListResponse getImageByUserId(UUID userId, String query, int page, int pageSize) {
+        List<Image> images = (query != null && !query.isBlank())
+                ? imageRepository.searchImagesByUserId(userId, query, page, pageSize)
+                : imageRepository.findImagesByUserId(userId, page, pageSize);
+
+        int totalCount = (query != null && !query.isBlank())
+                ? imageRepository.countSearchResultsByUserId(userId, query)
+                : imageRepository.countImagesByUserId(userId);
+
+        return buildListResponse(images, page, pageSize, totalCount);
+    }
+
+
     private GetImageResponse toResponse(Image image) {
         return new GetImageResponse(image.getId(), image.getCreatedAt(), image.getContentType(), image.getTags());
     }

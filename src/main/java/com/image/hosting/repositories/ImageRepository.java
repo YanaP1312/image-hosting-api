@@ -71,21 +71,6 @@ public class ImageRepository {
                 .single();
     }
 
-    public List<Image> findAllImages(int page, int pageSize) {
-        int offset = (page - 1) * pageSize;
-        return jdbcClient
-                .sql("""
-                        SELECT id, user_id, storage_key, created_at, content_type, tags
-                        FROM images
-                        ORDER BY created_at DESC
-                        LIMIT :pageSize OFFSET :offset
-                        """)
-                .param("pageSize", pageSize)
-                .param("offset", offset)
-                .query(this::mapRow)
-                .list();
-    }
-
     public Optional<Image> findImageById(UUID imageId) {
         return jdbcClient
                 .sql("""
@@ -97,15 +82,17 @@ public class ImageRepository {
                 .optional();
     }
 
-    public List<Image> findImagesByUserId(UUID userId) {
+    public List<Image> findAllImages(int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
         return jdbcClient
                 .sql("""
                         SELECT id, user_id, storage_key, created_at, content_type, tags
                         FROM images
-                        WHERE user_id = :userId
                         ORDER BY created_at DESC
+                        LIMIT :pageSize OFFSET :offset
                         """)
-                .param("userId", userId)
+                .param("pageSize", pageSize)
+                .param("offset", offset)
                 .query(this::mapRow)
                 .list();
     }
@@ -127,6 +114,42 @@ public class ImageRepository {
                 .query(this::mapRow)
                 .list();
     }
+
+    public List<Image> findImagesByUserId(UUID userId, int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        return jdbcClient
+                .sql("""
+                        SELECT id, user_id, storage_key, created_at, content_type, tags
+                        FROM images
+                        WHERE user_id = :userId
+                        ORDER BY created_at DESC
+                        LIMIT :pageSize OFFSET :offset
+                        """)
+                .param("userId", userId)
+                .param("pageSize", pageSize)
+                .param("offset", offset)
+                .query(this::mapRow)
+                .list();
+    }
+
+    public List<Image> searchImagesByUserId(UUID userId, String query, int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        return jdbcClient
+                .sql("""
+                        SELECT id, user_id, storage_key, created_at, content_type, tags
+                        FROM images
+                        WHERE user_id = :userId AND tags::text ILIKE :query
+                        ORDER BY created_at DESC
+                        LIMIT :pageSize OFFSET :offset
+                        """)
+                .param("userId", userId)
+                .param("query", "%" + query + "%")
+                .param("pageSize", pageSize)
+                .param("offset", offset)
+                .query(this::mapRow)
+                .list();
+    }
+
 
     public void deleteImageById(UUID id) {
         jdbcClient
@@ -169,6 +192,26 @@ public class ImageRepository {
                         SELECT COUNT(*) FROM images
                         WHERE tags::text ILIKE :query
                         """)
+                .param("query", "%" + query + "%")
+                .query(Integer.class)
+                .single();
+    }
+
+    public int countImagesByUserId(UUID userId) {
+        return jdbcClient
+                .sql("SELECT COUNT(*) FROM images WHERE user_id = :userId")
+                .param("userId", userId)
+                .query(Integer.class)
+                .single();
+    }
+
+    public int countSearchResultsByUserId(UUID userId, String query) {
+        return jdbcClient
+                .sql("""
+                        SELECT COUNT(*) FROM images
+                        WHERE user_id = :userId AND tags::text ILIKE :query
+                        """)
+                .param("userId", userId)
                 .param("query", "%" + query + "%")
                 .query(Integer.class)
                 .single();
