@@ -1,4 +1,4 @@
-package com.image.hosting.exceptions;
+package com.image.hosting.exceptions.auth;
 
 public class InvalidSessionException extends RuntimeException {
     public InvalidSessionException(String message) {

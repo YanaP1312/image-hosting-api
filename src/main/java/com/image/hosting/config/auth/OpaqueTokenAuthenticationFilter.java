@@ -1,4 +1,4 @@
-package com.image.hosting.config;
+package com.image.hosting.config.auth;
 
 import com.image.hosting.repositories.SessionRepository;
 import com.image.hosting.services.TokenService;

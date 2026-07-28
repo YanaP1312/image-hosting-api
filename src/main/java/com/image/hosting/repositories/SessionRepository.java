@@ -13,8 +13,8 @@ public class SessionRepository {
 
     private final JdbcClient jdbcClient;
 
-    public Session createSession(Session session) {
-        return jdbcClient
+    public void createSession(Session session) {
+        jdbcClient
                 .sql("""
                         INSERT INTO sessions (id, user_id, expires_at)
                         VALUES (:id, :userId, :expiresAt)
