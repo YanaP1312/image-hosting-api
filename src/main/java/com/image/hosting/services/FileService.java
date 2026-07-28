@@ -11,29 +11,29 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+
 
 import java.io.IOException;
-import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class FileService {
 
     private final S3Client s3Client;
+    private final String bucket;
 
-    @Value("${b2.bucket}")
-    private String bucket;
+    public FileService(S3Client s3Client, @Value("${b2.bucket}") String bucket) {
+        this.s3Client = s3Client;
+        this.bucket = bucket;
+    }
 
-    public String upload(MultipartFile file) throws Exception {
-        String key = "uploads/" + UUID.randomUUID() + "-" + file.getOriginalFilename();
+    public void upload(MultipartFile file, String key) throws Exception {
+
         s3Client.putObject(
                 PutObjectRequest.builder()
                         .bucket(bucket).key(key)
                         .contentType(file.getContentType()).build(),
                 RequestBody.fromInputStream(file.getInputStream(), file.getSize())
         );
-        return key;
     }
 
 

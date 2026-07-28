@@ -1,5 +1,11 @@
 package com.image.hosting.exceptions;
 
+import com.image.hosting.exceptions.auth.EmailAlreadyTakenException;
+import com.image.hosting.exceptions.auth.InvalidCredentialException;
+import com.image.hosting.exceptions.auth.InvalidSessionException;
+import com.image.hosting.exceptions.image.ForbiddenImageAccessException;
+import com.image.hosting.exceptions.image.ImageNotFoundException;
+import com.image.hosting.exceptions.image.ImageTooLargeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,6 +39,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidSessionException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Map<String, String> handleInvalidSession(InvalidSessionException ex) {
+        return Map.of("error", ex.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenImageAccessException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Map<String, String> handleForbiddenAccess(ForbiddenImageAccessException ex) {
+        return Map.of("error", ex.getMessage());
+    }
+
+    @ExceptionHandler(ImageNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleImageNotFound(ImageNotFoundException ex) {
+        return Map.of("error", ex.getMessage());
+    }
+
+    @ExceptionHandler(ImageTooLargeException.class)
+    @ResponseStatus(HttpStatus.CONTENT_TOO_LARGE)
+    public Map<String, String> handleImageTooLarge(ImageTooLargeException ex) {
         return Map.of("error", ex.getMessage());
     }
 

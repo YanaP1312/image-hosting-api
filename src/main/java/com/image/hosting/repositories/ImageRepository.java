@@ -1,13 +1,16 @@
 package com.image.hosting.repositories;
 
+
 import com.image.hosting.models.Image;
 import com.image.hosting.models.ImageTags;
 import lombok.AllArgsConstructor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import tools.jackson.databind.ObjectMapper;
 
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +23,7 @@ public class ImageRepository {
     private final JdbcClient jdbcClient;
 
 
-    private final RowMapper<Image> imageRowMapper = (rs, rowNum) -> {
+    private Image mapRow(ResultSet rs, int rowNum) throws SQLException {
         ImageTags tags = null;
         String tagsJson = rs.getString("tags");
         if (tagsJson != null) {
@@ -60,7 +63,7 @@ public class ImageRepository {
                 .param("user_id", image.getUserId())
                 .param("storage_key", image.getStorageKey())
                 .param("tags", tagsJson)
-                .query(imageRowMapper)
+                .query(this::mapRow)
                 .single();
     }
 
@@ -75,7 +78,7 @@ public class ImageRepository {
                     """)
                 .param("pageSize", pageSize)
                 .param("offset", offset)
-                .query(imageRowMapper)
+                .query(this::mapRow)
                 .list();
     }
 
@@ -86,7 +89,7 @@ public class ImageRepository {
                         FROM images WHERE id = :id
                         """)
                 .param("id", imageId)
-                .query(imageRowMapper)
+                .query(this::mapRow)
                 .optional();
     }
 
@@ -99,7 +102,7 @@ public class ImageRepository {
                     ORDER BY created_at DESC
                     """)
                 .param("userId", userId)
-                .query(imageRowMapper)
+                .query(this::mapRow)
                 .list();
     }
 
@@ -117,7 +120,7 @@ public class ImageRepository {
                 .param("pageSize", pageSize)
                 .param("offset", offset)
                 .param("query", "%" + query + "%")
-                .query(imageRowMapper)
+                .query(this::mapRow)
                 .list();
     }
 
@@ -145,7 +148,7 @@ public class ImageRepository {
                         """)
                 .param("tags", tagsJson)
                 .param("id", id)
-                .query(imageRowMapper)
+                .query(this::mapRow)
                 .single();
     }
 
