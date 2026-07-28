@@ -91,19 +91,16 @@ public class ImageService {
         );
     }
 
-    public GetImageListResponse getAllImages(int page, int pageSize) {
-        List<Image> images = imageRepository.findAllImages(page, pageSize);
-        int totalCount = imageRepository.countImage();
+    public GetImageListResponse getImages(String query, int page, int pageSize) {
+        List<Image> images = (query != null && !query.isBlank())
+                ? imageRepository.searchImages(page, pageSize, query)
+                : imageRepository.findAllImages(page, pageSize);
+
+        int totalCount = (query != null && !query.isBlank())
+                ? imageRepository.countSearchResults(query)
+                : imageRepository.countImage();
 
         return buildListResponse(images, page, pageSize, totalCount);
-
-    }
-
-    public GetImageListResponse getImagesWithQuery(int page, int pageSize, String query) {
-        List<Image> images = imageRepository.searchImages(page, pageSize, query);
-        int totalCount = imageRepository.countSearchResults(query);
-        return buildListResponse(images, page, pageSize, totalCount);
-
     }
 
     public GetImageListResponse getImageByUserId(UUID userId, String query, int page, int pageSize) {

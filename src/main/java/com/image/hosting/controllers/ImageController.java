@@ -50,11 +50,7 @@ public class ImageController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "50") int pageSize
     ) {
-        if (query != null && !query.isBlank()) {
-            return imageService.getImagesWithQuery(page, pageSize, query);
-        }
-
-        return imageService.getAllImages(page, pageSize);
+        return imageService.getImages(query, page, pageSize);
     }
 
     @GetMapping("/my")
