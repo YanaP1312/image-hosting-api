@@ -11,6 +11,10 @@ public record PostImageResponse (
 
         @JsonProperty("created_at")
         LocalDateTime createdAt,
+
+        @JsonProperty("content_type")
+        String contentType,
+
         ImageTags tags
 ){
 }

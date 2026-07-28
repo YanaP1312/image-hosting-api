@@ -1,13 +1,16 @@
 package com.image.hosting.services;
 
 import com.image.hosting.dto.responses.image.PostImageResponse;
+import com.image.hosting.exceptions.image.ImageNotFoundException;
 import com.image.hosting.exceptions.image.ImageTooLargeException;
 import com.image.hosting.models.Image;
+import com.image.hosting.models.ImageContent;
 import com.image.hosting.repositories.ImageRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -27,23 +30,38 @@ public class ImageService {
 
         UUID imageId = UUID.randomUUID();
         String storageKey = "users/" + userId + "/" + imageId;
+        String contentType = file.getContentType() != null ? file.getContentType() : "application/octet-stream";
 
         try {
             fileService.upload(file, storageKey);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to upload image to storage");
+            throw new RuntimeException("Failed to upload image to storage", e);
         }
 
         Image image = Image.builder()
                 .id(imageId)
                 .userId(userId)
                 .storageKey(storageKey)
+                .contentType(contentType)
                 .tags(null)
                 .build();
 
         Image created = imageRepository.createImage(image);
 
-        return new PostImageResponse(created.getId(), created.getCreatedAt(), created.getTags());
+        return new PostImageResponse(created.getId(), created.getCreatedAt(), created.getContentType(), created.getTags());
 
+    }
+
+    public ImageContent getImageById(UUID imageId) {
+
+        Image image = imageRepository.findImageById(imageId).orElseThrow(() ->
+                new ImageNotFoundException("Image not found"));
+
+        try {
+            byte[] bytes = fileService.download(image.getStorageKey());
+            return new ImageContent(bytes, image.getContentType());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to download image from storage", e);
+        }
     }
 }

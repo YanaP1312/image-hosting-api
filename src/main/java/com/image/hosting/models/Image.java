@@ -17,5 +17,7 @@ public class Image {
     private UUID userId;
     private String storageKey;
     private LocalDateTime createdAt;
+    private String contentType;
     private ImageTags tags;
+
 }

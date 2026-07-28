@@ -39,6 +39,7 @@ public class ImageRepository {
                 .userId(UUID.fromString(rs.getString("user_id")))
                 .storageKey(rs.getString("storage_key"))
                 .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                .contentType(rs.getString("content_type"))
                 .tags(tags)
                 .build();
     };
@@ -55,13 +56,14 @@ public class ImageRepository {
 
         return jdbcClient
                 .sql("""
-                        INSERT INTO images (id, user_id, storage_key, tags)
-                        VALUES (:id, :user_id, :storage_key, :tags::jsonb)
-                        RETURNING id, user_id, storage_key, created_at, tags
+                        INSERT INTO images (id, user_id, storage_key, content_type, tags)
+                        VALUES (:id, :user_id, :storage_key, :content_type, :tags::jsonb)
+                        RETURNING id, user_id, storage_key, created_at, content_type, tags
                         """)
                 .param("id", image.getId())
                 .param("user_id", image.getUserId())
                 .param("storage_key", image.getStorageKey())
+                .param("content_type", image.getContentType())
                 .param("tags", tagsJson)
                 .query(this::mapRow)
                 .single();
@@ -71,7 +73,7 @@ public class ImageRepository {
         int offset = (page - 1) * pageSize;
         return jdbcClient
                 .sql("""
-                    SELECT id, user_id, storage_key, tags, created_at
+                    SELECT id, user_id, storage_key, created_at, content_type, tags
                     FROM images
                     ORDER BY created_at DESC
                     LIMIT :pageSize OFFSET :offset
@@ -85,7 +87,7 @@ public class ImageRepository {
     public Optional<Image> findImageById(UUID imageId){
         return jdbcClient
                 .sql("""
-                        SELECT id, user_id, storage_key, created_at, tags
+                        SELECT id, user_id, storage_key, created_at, content_type, tags
                         FROM images WHERE id = :id
                         """)
                 .param("id", imageId)
@@ -96,7 +98,7 @@ public class ImageRepository {
     public List<Image> findImagesByUserId(UUID userId) {
         return jdbcClient
                 .sql("""
-                    SELECT id, user_id, storage_key, tags, created_at
+                    SELECT id, user_id, storage_key, created_at, content_type, tags
                     FROM images
                     WHERE user_id = :userId
                     ORDER BY created_at DESC
@@ -111,7 +113,7 @@ public class ImageRepository {
 
         return jdbcClient
                 .sql("""
-                        SELECT id, user_id, storage_key, tags, created_at
+                        SELECT id, user_id, storage_key, created_at, content_type, tags
                         FROM images
                         WHERE tags::text ILIKE :query
                         ORDER by created_at DESC
@@ -144,7 +146,7 @@ public class ImageRepository {
                         UPDATE images
                         SET tags = :tags::jsonb
                         WHERE id = :id
-                        RETURNING id, user_id, storage_key, created_at, tags
+                        RETURNING id, user_id, storage_key, created_at, content_type, tags
                         """)
                 .param("tags", tagsJson)
                 .param("id", id)
