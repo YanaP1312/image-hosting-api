@@ -1,5 +1,6 @@
 package com.image.hosting.controllers;
 
+import com.image.hosting.dto.responses.image.GetImageListResponse;
 import com.image.hosting.dto.responses.image.GetImageMetadataResponse;
 import com.image.hosting.dto.responses.image.PostImageResponse;
 import com.image.hosting.models.ImageContent;
@@ -41,6 +42,19 @@ public class ImageController {
     @GetMapping("/{id}/metadata")
     public GetImageMetadataResponse getImageMetadataById(@PathVariable UUID id){
         return imageService.getImageMetadataById(id);
+    }
+
+    @GetMapping
+    public GetImageListResponse getImages(
+            @RequestParam(required = false) String query,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "50") int pageSize
+    ){
+        if(query != null && !query.isBlank()){
+            return imageService.getImagesWithQuery(page, pageSize, query);
+        }
+
+        return imageService.getAllImages(page, pageSize);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.image.hosting.services;
 
+import com.image.hosting.dto.responses.image.GetImageListResponse;
 import com.image.hosting.dto.responses.image.GetImageMetadataResponse;
 import com.image.hosting.dto.responses.image.GetImageResponse;
 import com.image.hosting.dto.responses.image.PostImageResponse;
@@ -89,5 +90,32 @@ public class ImageService {
         );
     }
 
+    public GetImageListResponse getAllImages(int page, int pageSize){
+        List<Image> images = imageRepository.findAllImages(page, pageSize);
+        int totalCount = imageRepository.countImage();
+
+        return buildListResponse(images, page, pageSize, totalCount);
+
+    }
+
+    public GetImageListResponse getImagesWithQuery(int page, int pageSize, String query){
+        List<Image> images = imageRepository.searchImages(page, pageSize, query);
+        int totalCount = imageRepository.countSearchResults(query);
+        return buildListResponse(images, page, pageSize, totalCount);
+
+    }
+
+    private GetImageResponse toResponse(Image image){
+        return new GetImageResponse(image.getId(), image.getCreatedAt(), image.getContentType(), image.getTags());
+    }
+
+    private GetImageListResponse buildListResponse(List<Image> images, int page, int pageSize, int totalCount){
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+
+        List<GetImageResponse> imageResponses = images.stream()
+                .map(this::toResponse)
+                .toList();
+        return new GetImageListResponse(imageResponses, page, pageSize,totalCount, totalPages);
+    }
 
 }
