@@ -1,7 +1,7 @@
 package com.image.hosting.dto.responses.image;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.image.hosting.models.ImageTags;
+import com.image.hosting.models.helpers.ImageTags;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

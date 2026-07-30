@@ -1,0 +1,2 @@
+ALTER TABLE images
+    ADD COLUMN tagging_status VARCHAR(20) NOT NULL DEFAULT 'PENDING';

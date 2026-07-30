@@ -9,8 +9,9 @@ import com.image.hosting.exceptions.image.ForbiddenImageAccessException;
 import com.image.hosting.exceptions.image.ImageNotFoundException;
 import com.image.hosting.exceptions.image.ImageTooLargeException;
 import com.image.hosting.models.Image;
-import com.image.hosting.models.ImageContent;
+import com.image.hosting.models.helpers.ImageContent;
 import com.image.hosting.models.User;
+import com.image.hosting.models.helpers.TaggingStatus;
 import com.image.hosting.repositories.ImageRepository;
 import com.image.hosting.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
     private final FileService fileService;
+    private final LlmService llmService;
 
 
     public PostImageResponse uploadImage(MultipartFile file, UUID userId) {
@@ -57,7 +59,9 @@ public class ImageService {
 
         Image created = imageRepository.createImage(image);
 
-        return new PostImageResponse(created.getId(), created.getCreatedAt(), created.getContentType(), created.getTags());
+        llmService.tagImageAsync(created.getId(), created.getStorageKey(), created.getContentType());
+
+        return new PostImageResponse(created.getId(), created.getCreatedAt(), created.getContentType(), created.getTags(), created.getTaggingStatus());
 
     }
 
@@ -87,7 +91,8 @@ public class ImageService {
                 user.getName(),
                 image.getCreatedAt(),
                 image.getContentType(),
-                image.getTags()
+                image.getTags(),
+                image.getTaggingStatus()
         );
     }
 

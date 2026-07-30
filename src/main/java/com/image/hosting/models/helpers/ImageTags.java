@@ -1,4 +1,4 @@
-package com.image.hosting.models;
+package com.image.hosting.models.helpers;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

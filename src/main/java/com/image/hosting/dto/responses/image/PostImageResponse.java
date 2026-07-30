@@ -1,7 +1,8 @@
 package com.image.hosting.dto.responses.image;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.image.hosting.models.ImageTags;
+import com.image.hosting.models.helpers.ImageTags;
+import com.image.hosting.models.helpers.TaggingStatus;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,6 +16,9 @@ public record PostImageResponse(
         @JsonProperty("content_type")
         String contentType,
 
-        ImageTags tags
+        ImageTags tags,
+
+        @JsonProperty("tagging_status")
+        TaggingStatus taggingStatus
 ) {
 }

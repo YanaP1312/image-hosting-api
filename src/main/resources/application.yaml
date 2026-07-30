@@ -7,6 +7,8 @@ b2:
   access-key: '${B2_KEY_ID}'
   secret-key: '${B2_APPLICATION_KEY}'
   bucket: '${B2_BUCKET_NAME}'
+gemini:
+  api-key: '${GEMINI_API_KEY}'
 server:
   port: '8080'
 

@@ -1,5 +1,7 @@
 package com.image.hosting.models;
 
+import com.image.hosting.models.helpers.ImageTags;
+import com.image.hosting.models.helpers.TaggingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,5 +21,6 @@ public class Image {
     private LocalDateTime createdAt;
     private String contentType;
     private ImageTags tags;
+    private TaggingStatus taggingStatus;
 
 }

@@ -1,6 +1,7 @@
 package com.image.hosting.dto.responses.image;
 
-import com.image.hosting.models.ImageTags;
+import com.image.hosting.models.helpers.ImageTags;
+import com.image.hosting.models.helpers.TaggingStatus;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -11,6 +12,7 @@ public record GetImageMetadataResponse(
         String userName,
         LocalDateTime createdAt,
         String contentType,
-        ImageTags tags
+        ImageTags tags,
+        TaggingStatus taggingStatus
 ) {
 }
