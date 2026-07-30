@@ -29,6 +29,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
     private final FileService fileService;
+    private final LlmService llmService;
 
 
     public PostImageResponse uploadImage(MultipartFile file, UUID userId) {
@@ -56,6 +57,8 @@ public class ImageService {
                 .build();
 
         Image created = imageRepository.createImage(image);
+
+        llmService.tagImageAsync(created.getId(), created.getStorageKey(), created.getContentType());
 
         return new PostImageResponse(created.getId(), created.getCreatedAt(), created.getContentType(), created.getTags());
 
