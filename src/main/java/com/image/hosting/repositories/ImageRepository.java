@@ -2,7 +2,8 @@ package com.image.hosting.repositories;
 
 
 import com.image.hosting.models.Image;
-import com.image.hosting.models.ImageTags;
+import com.image.hosting.models.helpers.ImageTags;
+import com.image.hosting.models.helpers.TaggingStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -40,11 +41,10 @@ public class ImageRepository {
                 .storageKey(rs.getString("storage_key"))
                 .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
                 .contentType(rs.getString("content_type"))
+                .taggingStatus(TaggingStatus.valueOf(rs.getString("tagging_status")))
                 .tags(tags)
                 .build();
     }
-
-    ;
 
     public Image createImage(Image image) {
         String tagsJson = null;
@@ -60,7 +60,7 @@ public class ImageRepository {
                 .sql("""
                         INSERT INTO images (id, user_id, storage_key, content_type, tags)
                         VALUES (:id, :user_id, :storage_key, :content_type, :tags::jsonb)
-                        RETURNING id, user_id, storage_key, created_at, content_type, tags
+                        RETURNING id, user_id, storage_key, created_at, content_type, tags, tagging_status
                         """)
                 .param("id", image.getId())
                 .param("user_id", image.getUserId())
@@ -74,7 +74,7 @@ public class ImageRepository {
     public Optional<Image> findImageById(UUID imageId) {
         return jdbcClient
                 .sql("""
-                        SELECT id, user_id, storage_key, created_at, content_type, tags
+                        SELECT id, user_id, storage_key, created_at, content_type, tags, tagging_status
                         FROM images WHERE id = :id
                         """)
                 .param("id", imageId)
@@ -86,7 +86,7 @@ public class ImageRepository {
         int offset = (page - 1) * pageSize;
         return jdbcClient
                 .sql("""
-                        SELECT id, user_id, storage_key, created_at, content_type, tags
+                        SELECT id, user_id, storage_key, created_at, content_type, tags, tagging_status
                         FROM images
                         ORDER BY created_at DESC
                         LIMIT :pageSize OFFSET :offset
@@ -102,7 +102,7 @@ public class ImageRepository {
 
         return jdbcClient
                 .sql("""
-                        SELECT id, user_id, storage_key, created_at, content_type, tags
+                        SELECT id, user_id, storage_key, created_at, content_type, tags, tagging_status
                         FROM images
                         WHERE tags::text ILIKE :query
                         ORDER by created_at DESC
@@ -119,7 +119,7 @@ public class ImageRepository {
         int offset = (page - 1) * pageSize;
         return jdbcClient
                 .sql("""
-                        SELECT id, user_id, storage_key, created_at, content_type, tags
+                        SELECT id, user_id, storage_key, created_at, content_type, tags, tagging_status
                         FROM images
                         WHERE user_id = :userId
                         ORDER BY created_at DESC
@@ -136,7 +136,7 @@ public class ImageRepository {
         int offset = (page - 1) * pageSize;
         return jdbcClient
                 .sql("""
-                        SELECT id, user_id, storage_key, created_at, content_type, tags
+                        SELECT id, user_id, storage_key, created_at, content_type, tags, tagging_status
                         FROM images
                         WHERE user_id = :userId AND tags::text ILIKE :query
                         ORDER BY created_at DESC
@@ -158,7 +158,7 @@ public class ImageRepository {
                 .update();
     }
 
-    public Image updateImageTags(UUID id, ImageTags tags) {
+    public void updateImageTags(UUID id, ImageTags tags) {
         String tagsJson;
         try {
             tagsJson = objectMapper.writeValueAsString(tags);
@@ -166,17 +166,24 @@ public class ImageRepository {
             throw new RuntimeException(e);
         }
 
-        return jdbcClient
+        jdbcClient
                 .sql("""
                         UPDATE images
-                        SET tags = :tags::jsonb
+                        SET tags = :tags::jsonb, tagging_status = :tagging_status
                         WHERE id = :id
-                        RETURNING id, user_id, storage_key, created_at, content_type, tags
                         """)
                 .param("tags", tagsJson)
+                .param("tagging_status", TaggingStatus.COMPLETED.name())
                 .param("id", id)
-                .query(this::mapRow)
-                .single();
+                .update();
+    }
+
+    public void markTaggingFailed(UUID id){
+        jdbcClient
+                .sql("UPDATE images SET tagging_status = :tagging_status WHERE id = :id")
+                .param("tagging_status", TaggingStatus.FAILED.name())
+                .param("id", id)
+                .update();
     }
 
     public int countImage() {

@@ -5,7 +5,7 @@ import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.Part;
-import com.image.hosting.models.ImageTags;
+import com.image.hosting.models.helpers.ImageTags;
 import com.image.hosting.repositories.ImageRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +77,7 @@ public class LlmService {
             }
         }
         log.error("All retry attempts failed for image {}", imageId);
+        imageRepository.markTaggingFailed(imageId);
     }
 
     private String cleanJson(String text) {

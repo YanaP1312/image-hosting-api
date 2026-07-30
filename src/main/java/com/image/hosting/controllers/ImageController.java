@@ -3,7 +3,7 @@ package com.image.hosting.controllers;
 import com.image.hosting.dto.responses.image.GetImageListResponse;
 import com.image.hosting.dto.responses.image.GetImageMetadataResponse;
 import com.image.hosting.dto.responses.image.PostImageResponse;
-import com.image.hosting.models.ImageContent;
+import com.image.hosting.models.helpers.ImageContent;
 import com.image.hosting.services.ImageService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

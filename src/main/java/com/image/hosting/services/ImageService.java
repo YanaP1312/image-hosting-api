@@ -9,8 +9,9 @@ import com.image.hosting.exceptions.image.ForbiddenImageAccessException;
 import com.image.hosting.exceptions.image.ImageNotFoundException;
 import com.image.hosting.exceptions.image.ImageTooLargeException;
 import com.image.hosting.models.Image;
-import com.image.hosting.models.ImageContent;
+import com.image.hosting.models.helpers.ImageContent;
 import com.image.hosting.models.User;
+import com.image.hosting.models.helpers.TaggingStatus;
 import com.image.hosting.repositories.ImageRepository;
 import com.image.hosting.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -60,7 +61,7 @@ public class ImageService {
 
         llmService.tagImageAsync(created.getId(), created.getStorageKey(), created.getContentType());
 
-        return new PostImageResponse(created.getId(), created.getCreatedAt(), created.getContentType(), created.getTags());
+        return new PostImageResponse(created.getId(), created.getCreatedAt(), created.getContentType(), created.getTags(), created.getTaggingStatus());
 
     }
 
@@ -90,7 +91,8 @@ public class ImageService {
                 user.getName(),
                 image.getCreatedAt(),
                 image.getContentType(),
-                image.getTags()
+                image.getTags(),
+                image.getTaggingStatus()
         );
     }
 
