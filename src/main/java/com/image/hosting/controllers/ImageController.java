@@ -32,6 +32,8 @@ public class ImageController {
   @Operation(summary = "Upload a new image (max 10MB)")
   @ApiResponses({
       @ApiResponse(responseCode = "201", description = "Image successfully uploaded; AI tagging happens asynchronously"),
+      @ApiResponse(responseCode = "400", description = "Unsupported type of image",
+          content = @Content(examples = @ExampleObject(value = "{\"error\": \"Only JPEG and PNG images are supported\"}"))),
       @ApiResponse(responseCode = "401", description = "Invalid or expired session",
           content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}"))),
       @ApiResponse(responseCode = "413", description = "Image exceeds the 10MB size limit",
