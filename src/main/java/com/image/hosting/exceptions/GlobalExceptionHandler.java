@@ -6,6 +6,7 @@ import com.image.hosting.exceptions.auth.InvalidSessionException;
 import com.image.hosting.exceptions.image.ForbiddenImageAccessException;
 import com.image.hosting.exceptions.image.ImageNotFoundException;
 import com.image.hosting.exceptions.image.ImageTooLargeException;
+import com.image.hosting.exceptions.image.UnsupportedImageFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -57,6 +58,12 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ImageTooLargeException.class)
   @ResponseStatus(HttpStatus.CONTENT_TOO_LARGE)
   public Map<String, String> handleImageTooLarge(ImageTooLargeException ex) {
+    return Map.of("error", ex.getMessage());
+  }
+
+  @ExceptionHandler(UnsupportedImageFormatException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public Map<String, String> handleUnsupportedFormat(UnsupportedImageFormatException ex) {
     return Map.of("error", ex.getMessage());
   }
 

@@ -8,6 +8,7 @@ import com.image.hosting.exceptions.UserNotFoundException;
 import com.image.hosting.exceptions.image.ForbiddenImageAccessException;
 import com.image.hosting.exceptions.image.ImageNotFoundException;
 import com.image.hosting.exceptions.image.ImageTooLargeException;
+import com.image.hosting.exceptions.image.UnsupportedImageFormatException;
 import com.image.hosting.models.Image;
 import com.image.hosting.models.User;
 import com.image.hosting.models.helpers.ImageContent;
@@ -26,6 +27,7 @@ import java.util.UUID;
 public class ImageService {
 
   private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
+  private static final List<String> ALLOWED_CONTENT_TYPES = List.of("image/jpeg", "image/png");
   private final ImageRepository imageRepository;
   private final UserRepository userRepository;
   private final FileService fileService;
@@ -38,9 +40,13 @@ public class ImageService {
       throw new ImageTooLargeException("Image must not exceed 10MB");
     }
 
+    String contentType = file.getContentType();
+    if(contentType == null || !ALLOWED_CONTENT_TYPES.contains(contentType)){
+      throw new UnsupportedImageFormatException("Only JPEG and PNG images are supported");
+    }
+
     UUID imageId = UUID.randomUUID();
     String storageKey = "users/" + userId + "/" + imageId;
-    String contentType = file.getContentType() != null ? file.getContentType() : "application/octet-stream";
 
     try {
       fileService.upload(file, storageKey);
