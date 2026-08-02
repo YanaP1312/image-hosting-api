@@ -117,8 +117,7 @@ http://localhost:8080/swagger-ui/index.html
 
 To test protected endpoints, log in via `POST /auth/login`, copy the returned token, and paste it into the **Authorize** button at the top of the page (no need to type "Bearer" — Swagger adds it automatically).
 
-<img width="1431" height="795" alt="Знімок екрана 2026-08-02 о 15 25 51" src="https://github.com/user-attachments/assets/b2a92d3f-6972-4e77-b022-1c8d43d12d30" />
-
+<img width="710" height="783" alt="Знімок екрана 2026-08-02 о 15 47 06" src="https://github.com/user-attachments/assets/cdaa1b16-711f-4c13-9db4-d986f6b29079" />
 
 ## Known Limitations
 
