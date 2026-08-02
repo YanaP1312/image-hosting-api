@@ -20,29 +20,29 @@ import java.util.List;
 @AllArgsConstructor
 public class OpaqueTokenAuthenticationFilter extends OncePerRequestFilter {
 
-    private final SessionRepository sessionRepository;
-    private final TokenService tokenService;
+  private final SessionRepository sessionRepository;
+  private final TokenService tokenService;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
 
-        String header = request.getHeader("Authorization");
+    String header = request.getHeader("Authorization");
 
-        if (header != null && header.startsWith("Bearer ")) {
-            String rawToken = header.substring(7);
-            String hashedToken = tokenService.hashToken(rawToken);
+    if (header != null && header.startsWith("Bearer ")) {
+      String rawToken = header.substring(7);
+      String hashedToken = tokenService.hashToken(rawToken);
 
-            sessionRepository.findSessionById(hashedToken)
-                    .filter(session -> session.getExpiresAt().isAfter(LocalDateTime.now()))
-                    .ifPresent(session -> {
-                        var auth = new UsernamePasswordAuthenticationToken(
-                                session.getUserId(), null, List.of()
-                        );
-                        SecurityContextHolder.getContext().setAuthentication(auth);
-                    });
-        }
-
-        filterChain.doFilter(request, response);
+      sessionRepository.findSessionById(hashedToken)
+          .filter(session -> session.getExpiresAt().isAfter(LocalDateTime.now()))
+          .ifPresent(session -> {
+            var auth = new UsernamePasswordAuthenticationToken(
+                session.getUserId(), null, List.of()
+            );
+            SecurityContextHolder.getContext().setAuthentication(auth);
+          });
     }
+
+    filterChain.doFilter(request, response);
+  }
 }

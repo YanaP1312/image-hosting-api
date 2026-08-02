@@ -19,32 +19,32 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    @Operation(summary = "Get the current authenticated user's data")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Returns the current user's profile"),
-            @ApiResponse(responseCode = "401", description = "Invalid or expired session",
-                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}"))),
-            @ApiResponse(responseCode = "404", description = "User not found",
-                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"User not found\"}")))
-    })
-    @GetMapping("/me")
-    public GetCurrentUserResponse getCurrentUser(Authentication authentication) {
-        UUID userId = (UUID) authentication.getPrincipal();
-        return userService.getCurrentUser(userId);
-    }
+  @Operation(summary = "Get the current authenticated user's data")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Returns the current user's profile"),
+      @ApiResponse(responseCode = "401", description = "Invalid or expired session",
+          content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}"))),
+      @ApiResponse(responseCode = "404", description = "User not found",
+          content = @Content(examples = @ExampleObject(value = "{\"error\": \"User not found\"}")))
+  })
+  @GetMapping("/me")
+  public GetCurrentUserResponse getCurrentUser(Authentication authentication) {
+    UUID userId = (UUID) authentication.getPrincipal();
+    return userService.getCurrentUser(userId);
+  }
 
-    @Operation(summary = "Delete the current user's account (cascades to sessions and their images)")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Account successfully deleted"),
-            @ApiResponse(responseCode = "401", description = "Invalid or expired session",
-                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}")))
-    })
-    @DeleteMapping("/me")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCurrentUser(Authentication authentication) {
-        UUID userId = (UUID) authentication.getPrincipal();
-        userService.deleteUser(userId);
-    }
+  @Operation(summary = "Delete the current user's account (cascades to sessions and their images)")
+  @ApiResponses({
+      @ApiResponse(responseCode = "204", description = "Account successfully deleted"),
+      @ApiResponse(responseCode = "401", description = "Invalid or expired session",
+          content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}")))
+  })
+  @DeleteMapping("/me")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteCurrentUser(Authentication authentication) {
+    UUID userId = (UUID) authentication.getPrincipal();
+    userService.deleteUser(userId);
+  }
 }

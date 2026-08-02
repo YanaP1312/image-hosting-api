@@ -29,6 +29,9 @@ jobs:
           distribution: temurin
           java-version: '25'
           cache: maven
+      - name: Checkstyle
+        continue-on-error: true
+        run: ./mvnw --batch-mode checkstyle:check
       - name: Run tests
         env:
           B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
