@@ -51,7 +51,8 @@ public class ImageController {
     @Operation(summary = "Get the raw image bytes by ID (direct URL, renders in browser)", security = {})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Returns raw image bytes with correct Content-Type"),
-            @ApiResponse(responseCode = "404", description = "Image not found")
+            @ApiResponse(responseCode = "404", description = "Image not found",
+                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Image not found\"}")))
     })
     @GetMapping("/{id}")
     public ResponseEntity<byte[]> getImageContent(@PathVariable UUID id) {
@@ -64,7 +65,8 @@ public class ImageController {
     @Operation(summary = "Get image metadata including tags and uploader's name", security = {})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Returns image metadata"),
-            @ApiResponse(responseCode = "404", description = "Image not found")
+            @ApiResponse(responseCode = "404", description = "Image not found",
+                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Image not found\"}")))
     })
     @GetMapping("/{id}/metadata")
     public GetImageMetadataResponse getImageMetadataById(@PathVariable UUID id) {
@@ -88,7 +90,8 @@ public class ImageController {
     @Operation(summary = "List or search the current user's own images (paginated, 50 per page by default)")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Returns paginated list of the user's images"),
-            @ApiResponse(responseCode = "401", description = "Invalid or expired session")
+            @ApiResponse(responseCode = "401", description = "Invalid or expired session",
+                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}")))
     })
     @GetMapping("/my")
     public GetImageListResponse getMyImages(
@@ -108,9 +111,12 @@ public class ImageController {
     @Operation(summary = "Delete your own image")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Image successfully deleted"),
-            @ApiResponse(responseCode = "401", description = "Invalid or expired session"),
-            @ApiResponse(responseCode = "403", description = "You can only delete your own images"),
-            @ApiResponse(responseCode = "404", description = "Image not found")
+            @ApiResponse(responseCode = "401", description = "Invalid or expired session",
+                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}"))),
+            @ApiResponse(responseCode = "403", description = "You can only delete your own images",
+                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"You can only delete your own images\"}"))),
+            @ApiResponse(responseCode = "404", description = "Image not found",
+                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Image not found\"}")))
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

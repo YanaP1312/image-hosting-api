@@ -6,6 +6,8 @@ import com.image.hosting.dto.responses.auth.LoginResponse;
 import com.image.hosting.dto.responses.auth.RegisterResponse;
 import com.image.hosting.services.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -23,8 +25,16 @@ public class AuthController {
     @Operation(summary = "Register a new user", security = {})
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "User successfully registered"),
-            @ApiResponse(responseCode = "400", description = "Validation failed (invalid email, blank fields, password too short)"),
-            @ApiResponse(responseCode = "409", description = "Email is already registered")
+            @ApiResponse(responseCode = "400", description = "Validation failed (name missing, invalid email, blank fields, password too short)",
+                    content = @Content(examples = @ExampleObject(value = """
+                {
+                  "name": "Name must be at least 3 characters long",
+                  "email": "Email must be a valid email format",
+                  "password": "Password must be at least 8 characters long"
+                }
+                """))),
+            @ApiResponse(responseCode = "409", description = "Email is already registered",
+                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"This email already exist\"}")))
     })
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -35,8 +45,15 @@ public class AuthController {
     @Operation(summary = "Log in with email and password", security = {})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully logged in, returns session token"),
-            @ApiResponse(responseCode = "400", description = "Validation failed (invalid email format, blank fields)"),
-            @ApiResponse(responseCode = "401", description = "Invalid email or password")
+            @ApiResponse(responseCode = "400", description = "Validation failed (invalid email format, blank fields)",
+                    content = @Content(examples = @ExampleObject(value = """
+                {
+                  "email": "Email must be a valid email format",
+                  "password": "Password must be at least 8 characters long"
+                }
+                """))),
+            @ApiResponse(responseCode = "401", description = "Invalid email or password",
+                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}")))
     })
     @PostMapping("/login")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
@@ -46,7 +63,8 @@ public class AuthController {
     @Operation(summary = "Log out and invalidate the current session")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Successfully logged out"),
-            @ApiResponse(responseCode = "401", description = "Invalid or expired session")
+            @ApiResponse(responseCode = "401", description = "Invalid or expired session",
+                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}")))
     })
     @DeleteMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)

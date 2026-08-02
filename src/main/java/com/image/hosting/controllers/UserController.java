@@ -3,6 +3,8 @@ package com.image.hosting.controllers;
 import com.image.hosting.dto.responses.user.GetCurrentUserResponse;
 import com.image.hosting.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
@@ -22,8 +24,10 @@ public class UserController {
     @Operation(summary = "Get the current authenticated user's data")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Returns the current user's profile"),
-            @ApiResponse(responseCode = "401", description = "Invalid or expired session"),
-            @ApiResponse(responseCode = "404", description = "User not found")
+            @ApiResponse(responseCode = "401", description = "Invalid or expired session",
+                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}"))),
+            @ApiResponse(responseCode = "404", description = "User not found",
+                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"User not found\"}")))
     })
     @GetMapping("/me")
     public GetCurrentUserResponse getCurrentUser(Authentication authentication) {
@@ -34,7 +38,8 @@ public class UserController {
     @Operation(summary = "Delete the current user's account (cascades to sessions and their images)")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Account successfully deleted"),
-            @ApiResponse(responseCode = "401", description = "Invalid or expired session")
+            @ApiResponse(responseCode = "401", description = "Invalid or expired session",
+                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}")))
     })
     @DeleteMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
