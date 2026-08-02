@@ -20,57 +20,57 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+  private final AuthService authService;
 
-    @Operation(summary = "Register a new user", security = {})
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "User successfully registered"),
-            @ApiResponse(responseCode = "400", description = "Validation failed (name missing, invalid email, blank fields, password too short)",
-                    content = @Content(examples = @ExampleObject(value = """
-                {
-                  "name": "Name must be at least 3 characters long",
-                  "email": "Email must be a valid email format",
-                  "password": "Password must be at least 8 characters long"
-                }
-                """))),
-            @ApiResponse(responseCode = "409", description = "Email is already registered",
-                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"This email already exist\"}")))
-    })
-    @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public RegisterResponse register(@Valid @RequestBody RegisterRequest request) {
-        return authService.register(request);
-    }
+  @Operation(summary = "Register a new user", security = {})
+  @ApiResponses({
+      @ApiResponse(responseCode = "201", description = "User successfully registered"),
+      @ApiResponse(responseCode = "400", description = "Validation failed (name missing, invalid email, blank fields, password too short)",
+          content = @Content(examples = @ExampleObject(value = """
+              {
+                "name": "Name must be at least 3 characters long",
+                "email": "Email must be a valid email format",
+                "password": "Password must be at least 8 characters long"
+              }
+              """))),
+      @ApiResponse(responseCode = "409", description = "Email is already registered",
+          content = @Content(examples = @ExampleObject(value = "{\"error\": \"This email already exist\"}")))
+  })
+  @PostMapping("/register")
+  @ResponseStatus(HttpStatus.CREATED)
+  public RegisterResponse register(@Valid @RequestBody RegisterRequest request) {
+    return authService.register(request);
+  }
 
-    @Operation(summary = "Log in with email and password", security = {})
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Successfully logged in, returns session token"),
-            @ApiResponse(responseCode = "400", description = "Validation failed (invalid email format, blank fields)",
-                    content = @Content(examples = @ExampleObject(value = """
-                {
-                  "email": "Email must be a valid email format",
-                  "password": "Password must be at least 8 characters long"
-                }
-                """))),
-            @ApiResponse(responseCode = "401", description = "Invalid email or password",
-                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}")))
-    })
-    @PostMapping("/login")
-    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
-        return authService.login(request);
-    }
+  @Operation(summary = "Log in with email and password", security = {})
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Successfully logged in, returns session token"),
+      @ApiResponse(responseCode = "400", description = "Validation failed (invalid email format, blank fields)",
+          content = @Content(examples = @ExampleObject(value = """
+              {
+                "email": "Email must be a valid email format",
+                "password": "Password must be at least 8 characters long"
+              }
+              """))),
+      @ApiResponse(responseCode = "401", description = "Invalid email or password",
+          content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}")))
+  })
+  @PostMapping("/login")
+  public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+    return authService.login(request);
+  }
 
-    @Operation(summary = "Log out and invalidate the current session")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Successfully logged out"),
-            @ApiResponse(responseCode = "401", description = "Invalid or expired session",
-                    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}")))
-    })
-    @DeleteMapping("/logout")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(@RequestHeader("Authorization") String authHeader) {
-        String rawToken = authHeader.substring(7);
-        authService.logout(rawToken);
-    }
+  @Operation(summary = "Log out and invalidate the current session")
+  @ApiResponses({
+      @ApiResponse(responseCode = "204", description = "Successfully logged out"),
+      @ApiResponse(responseCode = "401", description = "Invalid or expired session",
+          content = @Content(examples = @ExampleObject(value = "{\"error\": \"Invalid or expired session\"}")))
+  })
+  @DeleteMapping("/logout")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void logout(@RequestHeader("Authorization") String authHeader) {
+    String rawToken = authHeader.substring(7);
+    authService.logout(rawToken);
+  }
 
 }

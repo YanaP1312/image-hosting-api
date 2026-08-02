@@ -15,12 +15,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class Image {
-    private UUID id;
-    private UUID userId;
-    private String storageKey;
-    private LocalDateTime createdAt;
-    private String contentType;
-    private ImageTags tags;
-    private TaggingStatus taggingStatus;
+  private UUID id;
+  private UUID userId;
+  private String storageKey;
+  private LocalDateTime createdAt;
+  private String contentType;
+  private ImageTags tags;
+  private TaggingStatus taggingStatus;
 
 }

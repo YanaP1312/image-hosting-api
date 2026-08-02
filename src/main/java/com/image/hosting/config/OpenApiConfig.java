@@ -11,21 +11,21 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
-    @Bean
-    public OpenAPI customOpenAPI() {
-        String schemeName = "bearerAuth";
+  @Bean
+  public OpenAPI customOpenAPI() {
+    String schemeName = "bearerAuth";
 
-        return new OpenAPI()
-                .info(new Info()
-                        .title("Image Hosting API")
-                        .version("1.0.0")
-                        .description("Backend API for image hosting application"))
-                .addSecurityItem(new SecurityRequirement().addList(schemeName))
-                .components(new Components()
-                        .addSecuritySchemes(schemeName, new SecurityScheme()
-                                .name(schemeName)
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("Opaque token")));
-    }
+    return new OpenAPI()
+        .info(new Info()
+            .title("Image Hosting API")
+            .version("1.0.0")
+            .description("Backend API for image hosting application"))
+        .addSecurityItem(new SecurityRequirement().addList(schemeName))
+        .components(new Components()
+            .addSecuritySchemes(schemeName, new SecurityScheme()
+                .name(schemeName)
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("Opaque token")));
+  }
 }

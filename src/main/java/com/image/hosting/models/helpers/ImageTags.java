@@ -13,10 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ImageTags {
-    @Schema(example = "[\"car\", \"tree\", \"cloud\"]")
-    private List<String> objects;
-    @Schema(example = "[\"sunset\", \"outdoor\"]")
-    private List<String> tags;
-    @Schema(example = "[\"blue\", \"orange\"]")
-    private List<String> colors;
+  @Schema(example = "[\"car\", \"tree\", \"cloud\"]")
+  private List<String> objects;
+  @Schema(example = "[\"sunset\", \"outdoor\"]")
+  private List<String> tags;
+  @Schema(example = "[\"blue\", \"orange\"]")
+  private List<String> colors;
 }

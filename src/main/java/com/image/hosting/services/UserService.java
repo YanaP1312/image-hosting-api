@@ -13,16 +13,16 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    public GetCurrentUserResponse getCurrentUser(UUID userId) {
-        User user = userRepository.findUserById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+  public GetCurrentUserResponse getCurrentUser(UUID userId) {
+    User user = userRepository.findUserById(userId)
+        .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        return new GetCurrentUserResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt());
-    }
+    return new GetCurrentUserResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt());
+  }
 
-    public void deleteUser(UUID userId) {
-        userRepository.deleteUserById(userId);
-    }
+  public void deleteUser(UUID userId) {
+    userRepository.deleteUserById(userId);
+  }
 }

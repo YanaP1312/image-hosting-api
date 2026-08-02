@@ -13,8 +13,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class Session {
-    private String id;
-    private UUID userId;
-    private LocalDateTime createdAt;
-    private LocalDateTime expiresAt;
+  private String id;
+  private UUID userId;
+  private LocalDateTime createdAt;
+  private LocalDateTime expiresAt;
 }

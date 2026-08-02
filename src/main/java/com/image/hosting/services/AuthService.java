@@ -20,55 +20,55 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class AuthService {
 
-    private SessionRepository sessionRepository;
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private TokenService tokenService;
+  private SessionRepository sessionRepository;
+  private UserRepository userRepository;
+  private PasswordEncoder passwordEncoder;
+  private TokenService tokenService;
 
-    public RegisterResponse register(RegisterRequest request) {
-        if (userRepository.findUserByEmail(request.email()).isPresent()) {
-            throw new EmailAlreadyTakenException("This email already exist");
-        }
-
-        String encodedPassword = passwordEncoder.encode(request.password());
-
-        User newUser = User.builder()
-                .name(request.name())
-                .email(request.email())
-                .passwordHash(encodedPassword)
-                .build();
-
-        User created = userRepository.createUser(newUser);
-
-        return new RegisterResponse(created.getId(), created.getName(), created.getEmail());
+  public RegisterResponse register(RegisterRequest request) {
+    if (userRepository.findUserByEmail(request.email()).isPresent()) {
+      throw new EmailAlreadyTakenException("This email already exist");
     }
 
-    public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findUserByEmail(request.email())
-                .orElseThrow(() -> new InvalidCredentialException("Invalid email or password"));
+    String encodedPassword = passwordEncoder.encode(request.password());
 
-        if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
-            throw new InvalidCredentialException("Invalid email or password");
-        }
+    User newUser = User.builder()
+        .name(request.name())
+        .email(request.email())
+        .passwordHash(encodedPassword)
+        .build();
 
-        String rawToken = tokenService.generateToken();
-        String hashedToken = tokenService.hashToken(rawToken);
+    User created = userRepository.createUser(newUser);
 
-        Session session = Session.builder()
-                .id(hashedToken)
-                .userId(user.getId())
-                .expiresAt(LocalDateTime.now().plusHours(2))
-                .build();
+    return new RegisterResponse(created.getId(), created.getName(), created.getEmail());
+  }
 
-        sessionRepository.createSession(session);
+  public LoginResponse login(LoginRequest request) {
+    User user = userRepository.findUserByEmail(request.email())
+        .orElseThrow(() -> new InvalidCredentialException("Invalid email or password"));
 
-        return new LoginResponse(rawToken);
+    if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
+      throw new InvalidCredentialException("Invalid email or password");
     }
 
-    public void logout(String rawToken) {
+    String rawToken = tokenService.generateToken();
+    String hashedToken = tokenService.hashToken(rawToken);
 
-        String hashedToken = tokenService.hashToken(rawToken);
-        sessionRepository.deleteSessionById(hashedToken);
-    }
+    Session session = Session.builder()
+        .id(hashedToken)
+        .userId(user.getId())
+        .expiresAt(LocalDateTime.now().plusHours(2))
+        .build();
+
+    sessionRepository.createSession(session);
+
+    return new LoginResponse(rawToken);
+  }
+
+  public void logout(String rawToken) {
+
+    String hashedToken = tokenService.hashToken(rawToken);
+    sessionRepository.deleteSessionById(hashedToken);
+  }
 
 }

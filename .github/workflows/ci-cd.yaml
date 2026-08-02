@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   pull_request:
@@ -29,6 +29,9 @@ jobs:
           distribution: temurin
           java-version: '25'
           cache: maven
+      - name: Checkstyle
+        continue-on-error: true
+        run: ./mvnw --batch-mode checkstyle:check
       - name: Run tests
         env:
           B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
@@ -36,3 +39,23 @@ jobs:
           B2_BUCKET_NAME: ${{ secrets.B2_BUCKET_NAME }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: ./mvnw verify -Dspring.profiles.active=dev
+
+  build-and-push:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest
