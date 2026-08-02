@@ -9,6 +9,8 @@ b2:
   bucket: '${B2_BUCKET_NAME}'
 gemini:
   api-key: '${GEMINI_API_KEY}'
+springdoc:
+  override-with-generic-response: false
 server:
   port: '8080'
 

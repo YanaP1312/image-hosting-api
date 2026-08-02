@@ -51,6 +51,8 @@ public class LlmService {
             try {
                 byte[] imageBytes = fileService.download(storageKey);
 
+                long startTime = System.currentTimeMillis();
+
                 GenerateContentResponse response = geminiClient.models.generateContent(
                         MODEL,
                         Content.fromParts(
@@ -66,7 +68,9 @@ public class LlmService {
                 ImageTags tags = objectMapper.readValue(rawJson, ImageTags.class);
 
                 imageRepository.updateImageTags(imageId, tags);
-                log.info("Successfully tagged image {}", imageId);
+
+                long duration = System.currentTimeMillis() - startTime;
+                log.info("Successfully tagged image {} in {} ms", imageId, duration);
                 return;
 
             } catch (Exception e) {

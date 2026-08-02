@@ -1,4 +1,9 @@
 package com.image.hosting.dto.responses.auth;
 
-public record LoginResponse(String token) {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public record LoginResponse(
+        @Schema(example = "LkFmpHJfuPqLEoVR3MZak0jsRODG8GQ-GratcZDkj09")
+        String token
+) {
 }
